@@ -55,7 +55,23 @@ Change `SITE_PASSWORD` in Vercel → Project Settings → Environment Variables,
 
 ### Updating the data
 
-Replace `sales_trend_*.csv` and the promo XLSX in the repo, push to `main`, Vercel auto-deploys in ~30 seconds. The dashboard auto-loads the bundled files on first visit (or you can configure live URLs via the **Data sources** modal).
+Two paths:
+
+**(1) Pull from Omni (recommended).** The script `scripts/omni-to-csv.js` converts an Omni `getData` JSON result into the dashboard CSV schema. Workflow when refreshing:
+
+```bash
+# After pulling fresh data via the Omni MCP getData tool, save the result file path:
+node scripts/omni-to-csv.js path/to/omni-result.txt data/sales-latest.csv
+git add data/sales-latest.csv
+git commit -m "Refresh sales from Omni — week of YYYY-MM-DD"
+git push
+```
+
+Vercel auto-deploys in ~30 seconds. Dashboard reloads with new data.
+
+**(2) Drop a new CSV manually.** Replace `data/sales-latest.csv` with any CSV that has the columns: `Date: Week, Product, Product → Target DPCI, Product → Muffin Product Line, Sales Dollars, Sales Units, Stores Scanning, PODs Scanning, Promo Sales Dollars, Promo Sales Units`. Push, Vercel deploys.
+
+The promo calendar XLSX is updated the same way — replace the file at the repo root and push.
 
 ## Data inputs (uploaded or fetched live)
 
