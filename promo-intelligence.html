@@ -5244,7 +5244,36 @@ window.openMappingModal = openMappingModal;
 window.openMarginModal = openMarginModal;
 
 // Boot
-document.addEventListener('DOMContentLoaded', () => {
+// On a fresh deploy with no cached data, try to auto-load the data files
+// shipped in the repo. Fails silently if they're not present (e.g. running
+// the dashboard standalone without the included data).
+const BUNDLED_DATA = {
+  sales: '/sales_trend_2026-04-27T07_09_40.627077139-07_00.csv',
+  promo: '/Little%20Spoon%20Promo%20Calendar%20%26%20Launch%20Plans%20at%20Target%20INTERNAL%20WORKING%20DOC%20(2).xlsx',
+};
+
+async function tryAutoLoadBundled() {
+  try {
+    const sr = await fetch(BUNDLED_DATA.sales);
+    if (!sr.ok) return false;
+    STATE.rawSales = await parseSalesCSV(new File([new Blob([await sr.text()])], 'sales.csv'));
+    const pr = await fetch(BUNDLED_DATA.promo);
+    if (pr.ok) {
+      const wb = XLSX.read(await pr.arrayBuffer(), { type: 'array', cellDates: true });
+      STATE.rawPromoParsed = parsePromoWorkbook(wb);
+      rebuildRawPromoFromSources();
+    }
+    STATE.lastUpdated = new Date().toISOString();
+    buildModel();
+    saveCache();
+    return true;
+  } catch (e) {
+    console.warn('Auto-load failed:', e);
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
   initEvents();
   renderScenarios();
   if (loadCache()) {
@@ -5255,8 +5284,17 @@ document.addEventListener('DOMContentLoaded', () => {
     applyAutoRefresh();
     showTab('overview');
     toast(`Restored ${STATE.skus.length} SKUs · ${(STATE.userPromoEvents||[]).length} user events.`);
+  } else {
+    // Fresh visit — try the bundled data files
+    const loaded = await tryAutoLoadBundled();
+    if (loaded) {
+      renderFilters();
+      renderScenarios();
+      updateLastUpdatedLabel();
+      showTab('overview');
+      toast(`Loaded ${STATE.skus.length} SKUs · ${STATE.weeks.length} weeks from bundled data.`);
+    }
   }
-  // Tick the "updated X ago" label every minute
   setInterval(updateLastUpdatedLabel, 60000);
 });
 </script>

@@ -42,9 +42,20 @@ In the dashboard, click **Data sources** in the top bar to point at hosted CSV /
 2. Import this GitHub repo
 3. Framework preset: **Other** (no build step)
 4. Output directory: `.` (root)
-5. Click **Deploy**
+5. **Set environment variables** (Settings → Environment Variables):
+   - `SITE_USER` — username for basic auth (e.g. `ls`)
+   - `SITE_PASSWORD` — password for basic auth (set something strong)
+6. Click **Deploy**
 
-The `vercel.json` rewrite serves `promo-intelligence.html` at the root URL automatically.
+The `vercel.json` rewrite serves `promo-intelligence.html` at the root URL automatically. The `middleware.js` Edge Middleware enforces HTTP Basic Auth on **every request** — including the data files. Without `SITE_PASSWORD` set, every request returns 401 (fail closed).
+
+### Updating the password
+
+Change `SITE_PASSWORD` in Vercel → Project Settings → Environment Variables, then redeploy. Browsers cache basic-auth credentials per origin until they're closed, so users may need to close + reopen the browser to be re-prompted.
+
+### Updating the data
+
+Replace `sales_trend_*.csv` and the promo XLSX in the repo, push to `main`, Vercel auto-deploys in ~30 seconds. The dashboard auto-loads the bundled files on first visit (or you can configure live URLs via the **Data sources** modal).
 
 ## Data inputs (uploaded or fetched live)
 

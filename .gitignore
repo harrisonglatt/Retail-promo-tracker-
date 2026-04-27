@@ -1,8 +1,4 @@
-# Source data files (confidential — keep out of public repos)
-*.xlsx
-*.xls
-*.csv
-*.tsv
+# Excel temp lock files (Office creates these)
 ~$*
 
 # Local dev / editor
