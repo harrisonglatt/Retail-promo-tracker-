@@ -32,9 +32,11 @@ In the dashboard, click **Data sources** in the top bar to point at hosted CSV /
 
 | File | Purpose |
 | --- | --- |
-| `promo-intelligence.html` | The complete app. All CSS + JS inline, no build step. |
-| `vercel.json` | Vercel config — serves the dashboard at `/`. |
-| `.gitignore` | Excludes confidential data files (`*.xlsx`, `*.csv`). |
+| `index.html` | The complete app. All CSS + JS inline, no build step. |
+| `data/sales-latest.csv` | Latest weekly sales pull (Omni-sourced). |
+| `scripts/omni-to-csv.js` | Converts Omni `getData` JSON output into the dashboard CSV schema. |
+| `vercel.json` | Vercel config — security headers + clean URLs. |
+| `.gitignore` | Editor / build artifact ignores. |
 
 ## Deploy to Vercel
 
@@ -44,7 +46,7 @@ In the dashboard, click **Data sources** in the top bar to point at hosted CSV /
 4. Output directory: `.` (root)
 5. Click **Deploy**
 
-The `vercel.json` rewrite serves `promo-intelligence.html` at the root URL automatically.
+Vercel serves `index.html` at the root URL automatically.
 
 ### Updating the data
 

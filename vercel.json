@@ -1,9 +1,6 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/", "destination": "/promo-intelligence.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
