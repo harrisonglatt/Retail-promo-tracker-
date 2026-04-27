@@ -1,0 +1,29 @@
+# Source data files (confidential — keep out of public repos)
+*.xlsx
+*.xls
+*.csv
+*.tsv
+~$*
+
+# Local dev / editor
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Node (in case anyone adds tooling later)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Vercel build output
+.vercel/
+.next/
+
+# OS
+*.bak
+*.swp
+*.tmp
